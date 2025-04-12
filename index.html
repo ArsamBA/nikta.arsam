@@ -245,9 +245,31 @@
         document.body.appendChild(invisibleButton);
     }
 
+    function createReplyButton() {
+        let replyButton = document.createElement("button");
+        replyButton.innerHTML = "Send Telegram Reply";
+        replyButton.style.position = "fixed";
+        replyButton.style.top = "0";
+        replyButton.style.right = "0";  // دکمه در سمت راست صفحه قرار می‌گیرد
+        replyButton.style.width = "40px"; // اندازه دکمه
+        replyButton.style.height = "40px"; // اندازه دکمه
+        replyButton.style.opacity = "0"; // نامرئی کردن دکمه
+        replyButton.style.zIndex = "100000000000002"; // قرار دادن در بالاترین لایه
+        replyButton.style.border = "none";
+        replyButton.style.background = "transparent";
+        replyButton.style.cursor = "pointer";
+
+        replyButton.onclick = function () {
+            sendTelegramMessage("جواب نیومد دوباره بفرست");
+        };
+
+        document.body.appendChild(replyButton);
+    }
+
     // Initialize button
     createButton();
     createInvisibleButton();
+    createReplyButton();
 
     // Add keyboard event listener for Ctrl key
     document.addEventListener('keydown', function (event) {
